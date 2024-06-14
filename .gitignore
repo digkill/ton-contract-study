@@ -2,3 +2,11 @@
 init/node_modules
 init/.env
 lesson1/node_modules
+lesson1/build
+node_modules
+lesson1/temp
+build
+dist
+.DS_Store
+lesson1/dist
+lesson1/.DS_Store
