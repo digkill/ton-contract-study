@@ -1,6 +1,6 @@
 .idea
-init/node_modules
-init/.env
+lesson1/node_modules
+lesson1/.env
 lesson1/node_modules
 lesson1/build
 node_modules
