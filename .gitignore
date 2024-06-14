@@ -10,3 +10,4 @@ dist
 .DS_Store
 lesson1/dist
 lesson1/.DS_Store
+ssh*
