@@ -20,6 +20,12 @@ contract BulkAdder with Deployable {
 
     // step 1
     receive(msg: Reach){
+        // require(msg.target<=10, "target can't be more than 10")
+        if(msg.target>10
+        ){
+            throw(123);
+        }
+
         self.target = msg.target; // 5
         send(SendParameters{
             to: msg.counter,
@@ -28,6 +34,10 @@ contract BulkAdder with Deployable {
             body: "query".asComment()
         });
     }
+
+    /*bounced(src: Reach){
+
+    }*/
 
     // step 3
     receive(msg: CounterValue){

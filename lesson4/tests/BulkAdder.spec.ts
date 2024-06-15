@@ -14,11 +14,11 @@ describe('BulkAdder', () => {
         blockchain = await Blockchain.create();
 
         bulkAdder = blockchain.openContract(await BulkAdder.fromInit());
-        counter = blockchain.openContract(await Counter.fromInit())
+        counter = blockchain.openContract(await Counter.fromInit(1n))
 
         deployer = await blockchain.treasury('deployer');
 
-        const deployResult = await bulkAdder.send(
+        const deployResultBulkAdder = await bulkAdder.send(
             deployer.getSender(),
             {
                 value: toNano('0.05'),
@@ -29,9 +29,27 @@ describe('BulkAdder', () => {
             }
         );
 
-        expect(deployResult.transactions).toHaveTransaction({
+        const deployResultCounter = await counter.send(
+            deployer.getSender(),
+            {
+                value: toNano('0.05'),
+            },
+            {
+                $$type: 'Deploy',
+                queryId: 0n,
+            }
+        );
+
+        expect(deployResultBulkAdder.transactions).toHaveTransaction({
             from: deployer.address,
             to: bulkAdder.address,
+            deploy: true,
+            success: true,
+        });
+
+        expect(deployResultCounter.transactions).toHaveTransaction({
+            from: deployer.address,
+            to: counter.address,
             deploy: true,
             success: true,
         });
@@ -41,4 +59,23 @@ describe('BulkAdder', () => {
         // the check is done inside beforeEach
         // blockchain and bulkAdder are ready to use
     });
+
+    it('should increse to target', async () =>{
+        const target = 50n
+        const res = await bulkAdder.send(
+            deployer.getSender(), {
+                value: toNano('0.5')
+            }, {
+                $$type: 'Reach',
+                counter: counter.address,
+                target: target
+            }
+        )
+
+        const count = await counter.getCounter()
+        expect(count).toEqual(target);
+
+      //  console.log(res)
+      //  console.log("events amount - ", res.events.length)
+    })
 });
